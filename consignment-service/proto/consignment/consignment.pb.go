@@ -8,8 +8,6 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -327,17 +325,6 @@ func (c *shippingServiceClient) GetConsignments(ctx context.Context, in *GetRequ
 type ShippingServiceServer interface {
 	CreateConsignment(context.Context, *Consignment) (*Response, error)
 	GetConsignments(context.Context, *GetRequest) (*Response, error)
-}
-
-// UnimplementedShippingServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedShippingServiceServer struct {
-}
-
-func (*UnimplementedShippingServiceServer) CreateConsignment(ctx context.Context, req *Consignment) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateConsignment not implemented")
-}
-func (*UnimplementedShippingServiceServer) GetConsignments(ctx context.Context, req *GetRequest) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetConsignments not implemented")
 }
 
 func RegisterShippingServiceServer(s *grpc.Server, srv ShippingServiceServer) {
