@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
+	micro "github.com/micro/go-micro"
 	pb "github.com/naichadouban/gomicroservices/consignment-service/proto/consignment"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -18,12 +18,11 @@ const (
 )
 
 func main() {
-	cc, err := grpc.Dial(address, grpc.WithInsecure())
-	if err != nil {
-		log.Panicf("establish connection error:%v\n", err)
-	}
-	defer cc.Close()
-	client := pb.NewShippingServiceClient(cc)
+
+	service := micro.NewService(micro.Name("shippy.consignment.cli"))
+	service.Init()
+	// 这个名字 shippy.service.consignment 一定要写对啊
+	client := pb.NewShippingServiceClient("shippy.service.consignment", service.Client())
 	fileName := defaultFileName
 	if len(os.Args) > 1 {
 		fileName = os.Args[1]
