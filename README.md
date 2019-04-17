@@ -29,7 +29,29 @@ https://ewanvalentine.io/microservices-in-golang-part-1/
 3. 停止当前所有运行中的容器
 `docker stop $(docker ps -qa)`
 
+
+
 # 学习记录
 ## dev1
 
+
 ## dev2
+### docker的使用
+1. Docker-从入门到实践
+https://yeasy.gitbooks.io/docker_practice/content/
+
+## dev3
+### yaml文件语法
+http://www.ruanyifeng.com/blog/2016/07/yaml.html
+
+### docker-compose的使用
+1. 常用命令
+`docker-compose build`
+`docker-compose up` 加 -d  表示在后台运行
+`docker-compose run *`
+`docker-compose down` 和run命令相对应
+`docker-compose images` 列出compose文件包含的镜像
+`docker-compose logs` 列出容器日志
+2. 基本参数
+-p :表示项目名，不指定的话，默认用所在目录作用项目名。
+

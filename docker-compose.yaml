@@ -1,0 +1,25 @@
+version: '3.1'
+
+# service 定义容器列表
+services :
+  consignment-cli:
+    build: ./consignment-cli
+    environment:
+      MICRO_REGISTRY: "mdns"
+  
+  consignment-service:
+    build: ./consignment-service
+    ports:
+      - 8010:8010
+    environment:
+      MICRO_ADRESS: ":8010"
+      MICRO_REGISTRY: "mdns"
+      DB_HOST: "datastore:27017"
+  
+  vessel-service:
+    build: ./vessel-service
+    ports: 
+      - 8011:8010
+    environment:
+      MICRO_ADRESS: ":8010"
+      MICRO_REGISTRY: "mdns"
