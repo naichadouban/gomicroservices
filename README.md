@@ -1,5 +1,8 @@
 # gomicroservices
-参考文章
+微服务入门第一篇文章
+http://blog.cuicc.com/blog/2015/07/22/microservices/
+
+本系列参考文章
 中文地址
 
 https://wuyin.io/archives/page/2/
@@ -22,6 +25,9 @@ https://ewanvalentine.io/microservices-in-golang-part-1/
 然后把默认的编译器都安装上即可（其实只要选择编译器是勾选C Compiler 与C++ Compiler）
 
 最后在MinGW的安装目录，打开bin文件夹，将mingw32-make.exe重命名为make.exe
+
+3. 停止当前所有运行中的容器
+`docker stop $(docker ps -qa)`
 
 # 学习记录
 ## dev1

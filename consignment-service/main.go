@@ -7,6 +7,7 @@ import (
 
 	micro "github.com/micro/go-micro"
 	pb "github.com/naichadouban/gomicroservices/consignment-service/proto/consignment"
+	vesselProto "github.com/naichadouban/gomicroservices/vessel-service/proto/vessel"
 )
 
 type repository interface {
@@ -33,10 +34,25 @@ func (repo *Repository) GetAll() []*pb.Consignment {
 // you can check the interface in the generated code itself for exact method signatures etc
 // to give you a better idea.
 type service struct {
-	repo *Repository
+	repo         *Repository
+	vesselClient vesselProto.VesselServiceClient
 }
 
 func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment, res *pb.Response) error {
+	// here we call a client instance of our vessel service with our consignment weight ,
+	// and the amount of containers as the capacity value
+	vesselResponse, err := s.vesselClient.FindAvailableVessel(context.Background(), &vesselProto.Specification{
+		MaxWeight: req.Weight,
+		Capacity:  int32(len(req.Containers)),
+	})
+	if err != nil {
+		return err
+	}
+	log.Printf("Found vessel:%s \n", vesselResponse.Vessel.Name)
+	// We set the VesselID as the vessel we got back from out vessel vervice
+	req.VesselId = vesselResponse.Vessel.Id
+
+	// Save our consignment
 	consignment, err := s.repo.Create(req)
 	if err != nil {
 		return err
@@ -60,8 +76,11 @@ func main() {
 	)
 	// Init will parse the command line flags
 	srv.Init()
+
+	vesselClient := vesselProto.NewVesselServiceClient("shippy.service.vessel", srv.Client())
+
 	// register handler
-	pb.RegisterShippingServiceHandler(srv.Server(), &service{repo})
+	pb.RegisterShippingServiceHandler(srv.Server(), &service{repo, vesselClient})
 	// Run the server
 	if err := srv.Run(); err != nil {
 		log.Panicf("micro server run error:%v\n", err)
