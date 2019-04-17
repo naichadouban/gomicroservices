@@ -3,6 +3,7 @@ package vessel;
 
 service VesselService{
     rpc FindAvailableVessel(Specification) returns (Response){}
+    rpc Create(Vessel) returns (Response) {}
 }
 message Vessel{
     string id  =1;
@@ -19,4 +20,5 @@ message Specification {
 message Response{
     Vessel vessel =1;
     repeated Vessel vessels=2;
+    bool created = 3;
 }
