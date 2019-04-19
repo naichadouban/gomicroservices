@@ -13,6 +13,7 @@ message Vessel{
     bool available= 5;
     string owner_id = 6;
 }
+message Request{}
 message Specification {
     int32 capacity =1;
     int32 max_weight =2;

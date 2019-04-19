@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"gopkg.in/mgo.v2"
 
 	pb "github.com/naichadouban/gomicroservices/vessel-service/proto/vessel"
 )
 
 type handler struct {
-	session *mongo.Co
+	session *mgo.Session
 }
 
 func(h *handler) GetRepo() repository {
@@ -24,8 +25,9 @@ func (h *handler) Create(ctx context.Context,req *pb.Vessel,res *pb.Response)err
 
 }
 
-func (h *service) FindAvailableVessel(ctx context.Context, req *pb.Specification, res *pb.Response) error {
-	vessel, err := s.repo.FindAvailable(req)
+func (h *handler) FindAvailableVessel(ctx context.Context, req *pb.Specification, res *pb.Response) error {
+	defer h.GetRepo().Close()
+	vessel, err := h.GetRepo().FindAvailable(req)
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"gopkg.in/mgo.v2/bson"
 
 	"gopkg.in/mgo.v2"
 
@@ -9,29 +9,37 @@ import (
 )
 
 const (
-	DB_NAME        = "shippy"
-	CON_COLLECTION = "vessel"
+	DB_NAME        = "vessels"
+	CON_COLLECTION = "vessels"
 )
 
 type repository interface {
 	FindAvailable(*pb.Specification) (*pb.Vessel, error)
 	Create(*pb.Vessel) error
+	Close()
 }
 type VesselRepository struct {
 	session *mgo.Session
 }
 
 func (repo *VesselRepository) FindAvailable(spec *pb.Specification) (*pb.Vessel, error) {
-	for _, vessel := range repo.vessels {
-		if spec.Capacity < vessel.Capacity && spec.MaxWeight < vessel.MaxWeight {
-			return vessel, nil
-		}
+	var vessel *pb.Vessel
+	err := repo.collection().Find(bson.M{
+		"capacity":bson.M{"$gte":spec.Capacity},
+		"maxweight":bson.M{"$gte":spec.MaxWeight},
+	}).One(&vessel)
+	if err != nil{
+		return nil,err
 	}
-	return nil, errors.New("no vessel find by that spec")
+	return vessel,nil
 }
 func (repo *VesselRepository) Create(vessel *pb.Vessel) error {
 	return repo.collection().Insert(vessel)
 }
 func (repo *VesselRepository) collection() *mgo.Collection {
 	return repo.session.DB(DB_NAME).C(CON_COLLECTION)
+}
+
+func (repo *VesselRepository) Close(){
+	repo.session.Close()
 }

@@ -33,7 +33,7 @@ func main() {
 	}
 	res, err := client.CreateConsignment(context.Background(), consignment)
 	if err != nil {
-		log.Panicf("grpc client call error:%v\n", err)
+		log.Panicf("rpc client call error:%v\n", err)
 	}
 	// log.Printf("get response:%#v", res)
 	log.Printf("create consignment:%v", res.Created)

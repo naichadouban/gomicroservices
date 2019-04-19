@@ -6,6 +6,12 @@ services :
     build: ./consignment-cli
     environment:
       MICRO_REGISTRY: "mdns"
+
+  user-cli:
+    build: ./user-cli
+    environment:
+      MICRO_REGISTRY: "mdns"
+
   
   consignment-service:
     build: ./consignment-service
@@ -15,6 +21,8 @@ services :
       MICRO_ADRESS: ":8010"
       MICRO_REGISTRY: "mdns"
       DB_HOST: "datastore:27017"
+    depends_on: 
+      - datastore
   
   vessel-service:
     build: ./vessel-service
@@ -24,8 +32,30 @@ services :
       MICRO_ADRESS: ":8010"
       MICRO_REGISTRY: "mdns"
       DB_HOST: "datastore:27017"
+    depends_on: 
+      - datastore
+
+  user-service:
+    build: ./user-service
+    ports:
+    - 8013:8010
+    environment:
+      MICRO_ADDRESS: ":8010"
+      MICRO_REGISTRY: "mdns"
+      DB_NAME: "test"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_USER: "test"
+      DB_PASSWORD: "000"
+    depends_on:
+      - database
 
   datastore:
     image: mongo
     ports:
       - 27017:27017
+
+  database:
+    image: postgres:9.5.4
+    ports:
+      - 5432

@@ -37,7 +37,7 @@ func main() {
 	// register handler
 	pb.RegisterShippingServiceHandler(server.Server(), &handler{session,vesselClient})
 	// Run the server
-	if err := srv.Run(); err != nil {
+	if err := server.Run(); err != nil {
 		log.Panicf("micro server run error:%v\n", err)
 	}
 }
