@@ -1,17 +1,16 @@
 package main
 
 import (
-	"github.com/micro/go-micro"
 	"fmt"
+	"github.com/micro/go-micro"
 	pb "github.com/naichadouban/gomicroservices/user-service/proto/user"
-	"log"
 )
 
 func main(){
 	// 连接到数据库
 	db,err := CreateConnection()
 	if err!= nil{
-		log.Fatalf("connect error: %v\n", err)
+		llog.Fatalf("connect error: %v\n", err)
 	}
 	fmt.Printf("%+v\n",db)
 	repo := &UserRepository{db:db}
@@ -24,7 +23,7 @@ func main(){
 	pb.RegisterUserServiceHandler(s.Server(),&handler{repo:repo})
 
 	if err := s.Run();err!= nil{
-		log.Fatalf("user service error: %v\n", err)
+		llog.Fatalf("user service error: %v\n", err)
 	}
-
 }
+
