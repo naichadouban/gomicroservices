@@ -20,7 +20,10 @@ func main(){
 	s := micro.NewService(micro.Name("shippy.service.user"),micro.Version("latest"))
 	s.Init()
 
-	pb.RegisterUserServiceHandler(s.Server(),&handler{repo:repo})
+	pb.RegisterUserServiceHandler(s.Server(),&handler{
+		repo:repo,
+		tokenService:&TokenService{},
+	})
 
 	if err := s.Run();err!= nil{
 		llog.Fatalf("user service error: %v\n", err)

@@ -17,14 +17,19 @@ var levelMap = map[string]logrus.Level{
 }
 
 func init() {
+	llog = logrus.New()
 	// 以JSON格式为输出，代替默认的ASCII格式
-	logrus.SetFormatter(&logrus.JSONFormatter{})
+	llog.SetFormatter(&logrus.JSONFormatter{})
 	// 以Stdout为输出，代替默认的stderr
-	logrus.SetOutput(os.Stdout)
+	llog.SetOutput(os.Stdout)
 	// 设置日志等级,先从环境变量中读取，然后判断下
-	logLevel := strings.ToLower(os.Getenv("loglevel"))
+	var logLevel string
+	if os.Getenv("loglevel")!= ""{
+		logLevel = strings.ToLower(os.Getenv("loglevel"))
+	}
+
 	if logLevel != "debug" && logLevel != "info" && logLevel != "warn" && logLevel != "error" && logLevel != "fatal" && logLevel != "panic" {
 		logLevel = "debug"
 	}
-	logrus.SetLevel(levelMap[logLevel])
+	llog.SetLevel(levelMap[logLevel])
 }

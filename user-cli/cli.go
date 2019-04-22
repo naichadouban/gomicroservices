@@ -8,6 +8,7 @@ import (
 	pb "github.com/naichadouban/gomicroservices/user-service/proto/user"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -42,7 +43,7 @@ func main() {
 			email := c.String("email")
 			password := c.String("password")
 			company := c.String("company")
-			log.Printf("parse command args:%v,%v,%v,%v\n",name,email,password,company)
+			llog.Tracef("parse command args:%v,%v,%v,%v\n",name,email,password,company)
 			// Call our user service
 			r, err := client.Create(context.TODO(), &pb.User{
 				Name:     name,
@@ -53,15 +54,24 @@ func main() {
 			if err != nil {
 				log.Fatalf("Could not create: %v", err)
 			}
-			log.Printf("Created: %s", r.User.Id)
-
+			llog.Infof("Created: %s", r.User.Id)
+			llog.Println(strings.Repeat("=",30))
 			getAll, err := client.GetAll(context.Background(), &pb.Request{})
 			if err != nil {
-				log.Fatalf("Could not list users: %v", err)
+				llog.Fatalf("Could not list users: %v", err)
 			}
 			for _, v := range getAll.Users {
-				log.Println(v)
+				llog.Info(v)
 			}
+
+			authRes,err := client.Auth(context.TODO(),&pb.User{
+				Email:email,
+				Password:password,
+			})
+			if err != nil {
+				log.Fatalf("auth failed: %v", err)
+			}
+			log.Println("token: ", authRes.Token)
 
 			os.Exit(0)
 		}),

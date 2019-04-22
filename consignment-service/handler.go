@@ -20,6 +20,7 @@ func (h *handler) GetRepo() repository {
 }
 
 func (h *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, res *pb.Response) error {
+	llog.Tracef("receive CreateConsignment request:%v",req)
 	defer h.GetRepo().Close()
 
 	// 寻找合适的 轮船
@@ -48,6 +49,7 @@ func (h *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 }
 
 func (h *handler) GetConsignments(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
+	llog.Tracef("receive GetConsignments request:%v",req)
 	defer h.GetRepo().Close()
 	consignments, err := h.GetRepo().GetAll()
 	if err != nil {

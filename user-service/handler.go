@@ -13,7 +13,7 @@ type handler struct {
 }
 func (h *handler)Create(ctx context.Context,req *pb.User,res *pb.Response)error{
 	llog.Tracef("user-service receive create request: %v\n",req)
-	// hash处理用户面
+	// hash处理用户密码
 	hashedpwd,err:=bcrypt.GenerateFromPassword([]byte(req.Password),bcrypt.DefaultCost)
 	if err != nil{
 		llog.Errorf("genetateFromPassword error:%v",err)
@@ -56,7 +56,6 @@ func (h *handler) Auth(ctx context.Context,req *pb.User,res *pb.Token)error{
 		llog.Errorf("can't pass password check:%v",err)
 		return err
 	}
-	// TODO token
 	tokenStr,err := h.tokenService.Encode(u)
 	if err != nil{
 		llog.Errorf("generate token string error:%v",err)
