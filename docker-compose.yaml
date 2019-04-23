@@ -21,7 +21,7 @@ services :
       MICRO_ADRESS: ":8010"
       MICRO_REGISTRY: "mdns"
       DB_HOST: "datastore:27017"
-      DISABLE_AUTH: false
+      DISABLE_AUTH: "false"
     depends_on: 
       - datastore
   
@@ -43,13 +43,21 @@ services :
     environment:
       MICRO_ADDRESS: ":8010"
       MICRO_REGISTRY: "mdns"
-      DB_NAME: "test"
+      DB_NAME: "postgres"
       DB_HOST: "database"
       DB_PORT: "5432"
-      DB_USER: "test"
+      DB_USER: "postgres"
       DB_PASSWORD: "000"
     depends_on:
       - database
+
+  email-service:
+    build: ./email-service
+    ports:
+    - 8015:8010
+    environment:
+      MICRO_ADDRESS: ":8010"
+      MICRO_REGISTRY: "mdns"
 
   datastore:
     image: mongo
@@ -60,3 +68,5 @@ services :
     image: postgres:9.5.4
     ports:
       - 5432
+    environment:
+      POSTGRES_PASSWORD: '000'

@@ -6,6 +6,7 @@ build_linux:
 	GOOS=linux GOARCH=amd64 go build  -o ./vessel-service/vessel-service ./vessel-service
 	GOOS=linux GOARCH=amd64 go build  -o ./consignment-service/consignment-service ./consignment-service
 	GOOS=linux GOARCH=amd64 go build  -o ./user-service/user-service ./user-service
+	GOOS=linux GOARCH=amd64 go build  -o ./email-service/email-service ./email-service
 	GOOS=linux GOARCH=amd64 go build  -o ./consignment-cli/consignment-cli ./consignment-cli
 	GOOS=linux GOARCH=amd64 go build  -o ./user-cli/user-cli ./user-cli
 
