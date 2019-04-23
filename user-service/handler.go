@@ -2,9 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"github.com/micro/go-micro/broker"
+	"github.com/micro/go-micro"
 	_ "github.com/micro/go-plugins/broker/nats"
 	pb "github.com/naichadouban/gomicroservices/user-service/proto/user"
 	"golang.org/x/crypto/bcrypt"
@@ -15,7 +14,7 @@ const topic = "user.created"
 type handler struct {
 	repo         repository
 	tokenService Authable
-	PubSub       broker.Broker
+	Publisher       micro.Publisher
 }
 
 func (h *handler) Create(ctx context.Context, req *pb.User, res *pb.Response) error {
@@ -32,8 +31,12 @@ func (h *handler) Create(ctx context.Context, req *pb.User, res *pb.Response) er
 	}
 	res.User = req
 
-	if err := h.publishEvent(req); err != nil {
-		llog.Errorf("user service publishEvent error:%v", err)
+	//if err := h.publishEvent(req); err != nil {
+	//	llog.Errorf("user service publishEvent error:%v", err)
+	//	return err
+	//}
+	if err := h.Publisher.Publish(ctx,req);err != nil{
+		llog.Errorf("publish data:%v,error:%v",req,err)
 		return err
 	}
 	return nil
@@ -92,22 +95,22 @@ func (h *handler) ValidateToken(ctx context.Context, req *pb.Token, res *pb.Toke
 }
 
 // 发送消息通知
-func (h *handler) publishEvent(user *pb.User) error {
-	llog.Tracef("publish event:%s,data:%v",topic,user)
-	body, err := json.Marshal(user)
-	if err != nil {
-		return err
-	}
-	msg := &broker.Message{
-		Header: map[string]string{
-			"id": user.Id,
-		},
-		Body: body,
-	}
-
-	// 发布user.created消息
-	if err := h.PubSub.Publish(topic, msg); err != nil {
-		llog.Errorf("publish event error:%v", err)
-	}
-	return nil
-}
+//func (h *handler) publishEvent(user *pb.User) error {
+//	llog.Tracef("publish event:%s,data:%v",topic,user)
+//	body, err := json.Marshal(user)
+//	if err != nil {
+//		return err
+//	}
+//	msg := &broker.Message{
+//		Header: map[string]string{
+//			"id": user.Id,
+//		},
+//		Body: body,
+//	}
+//
+//	// 发布user.created消息
+//	if err := h.PubSub.Publish(topic, msg); err != nil {
+//		llog.Errorf("publish event error:%v", err)
+//	}
+//	return nil
+//}

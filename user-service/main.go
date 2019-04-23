@@ -21,12 +21,12 @@ func main() {
 	s.Init()
 
 	// 获取broker实例
-	broker := s.Server().Options().Broker
-
+	//broker := s.Server().Options().Broker
+	publisher := micro.NewPublisher(topic, s.Client())
 	pb.RegisterUserServiceHandler(s.Server(), &handler{
 		repo:         repo,
-		tokenService: &TokenService{},
-		PubSub:       broker,
+		tokenService: &TokenService{repo: repo},
+		Publisher:    publisher,
 	})
 
 	if err := s.Run(); err != nil {
